@@ -1,4 +1,4 @@
-# Lab 1: YOUR_FIRSTNAME LASTNAME
+# Lab 1: Ryan VERNEL
 
 ### Morse code
 
@@ -9,13 +9,26 @@ int main(void)
 {
     // Set pin where on-board LED is connected as output
     pinMode(LED_GREEN, OUTPUT);
+    digitalWrite(LED_GREEN, HIGH);
 
     // Infinite loop
     while (1)
     {
-        // Generate a lettre `A` Morse code
+        digitalWrite(LED_GREEN, LOW);   //The led is ON because it is in active low
 
-        // WRITE YOUR CODE HERE
+        _delay_ms(100); //The led stay ON during 100 milliseconds to do the "dot"
+
+        digitalWrite(LED_GREEN, HIGH);  //The led in now OFF after a delay of 100 milliseconds
+
+        _delay_ms(200);
+
+        digitalWrite(LED_GREEN, LOW);   //Turn again the led ON after 500 milliseconds
+
+        _delay_ms(500); //The led stay ON during 500 milliseconds to do the "comma"
+
+        digitalWrite(LED_GREEN, HIGH);
+
+        _delay_ms(200);
 
     }
     
