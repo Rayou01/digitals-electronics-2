@@ -2,7 +2,7 @@
 ##
 ###
 
-*qsterisks* or _underscores_.
+*asterisks* or _underscores_.
 **asterisks** or __underscores__.
 
 1. First Item of the ordered list
