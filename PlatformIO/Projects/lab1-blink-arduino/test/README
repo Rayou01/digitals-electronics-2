@@ -8,25 +8,27 @@
 int main(void)
 {
     // Set pin where on-board LED is connected as output
-    pinMode(LED_GREEN, OUTPUT);
-    digitalWrite(LED_GREEN, HIGH);
+    #define PB0 8
+
+    pinMode(LED_RED, OUTPUT);
+    digitalWrite(LED_RED, HIGH);
 
     // Infinite loop
     while (1)
     {
-        digitalWrite(LED_GREEN, LOW);   //The led is ON because it is in active low
+        digitalWrite(LED_RED, LOW);   //The led is ON because it is in active low
 
         _delay_ms(100); //The led stay ON during 100 milliseconds to do the "dot"
 
-        digitalWrite(LED_GREEN, HIGH);  //The led in now OFF after a delay of 100 milliseconds
+        digitalWrite(LED_RED, HIGH);  //The led in now OFF after a delay of 100 milliseconds
 
         _delay_ms(200);
 
-        digitalWrite(LED_GREEN, LOW);   //Turn again the led ON after 500 milliseconds
+        digitalWrite(LED_RED, LOW);   //Turn again the led ON after 500 milliseconds
 
         _delay_ms(500); //The led stay ON during 500 milliseconds to do the "comma"
 
-        digitalWrite(LED_GREEN, HIGH);
+        digitalWrite(LED_RED, HIGH);
 
         _delay_ms(200);
 
