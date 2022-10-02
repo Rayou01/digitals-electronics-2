@@ -8,6 +8,7 @@
 int main(void)
 {
     // Set pin where on-board LED is connected as output
+    #define LED_RED   PB0
     #define PB0 8
 
     pinMode(LED_RED, OUTPUT);
