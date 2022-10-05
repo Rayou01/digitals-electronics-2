@@ -51,14 +51,8 @@ int main(void)
     while (1)
     {
         // Change LED value
-        if (led_value == LOW)
-        {
-            led_value = HIGH;
-        }
-        else
-        {
-            led_value = LOW;
-        }
+        if (led_value == LOW)   led_value = HIGH;
+        else    led_value = LOW;
 
         // Pause several milliseconds
         _delay_ms(SHORT_DELAY);
