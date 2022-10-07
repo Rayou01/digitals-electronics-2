@@ -95,5 +95,5 @@ void loop() {
 }//loop()
 
 /* Here there is the link to the schematic for this application : 
- * 
+ * https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab2-gpio_library/test/lab2_LEDs_and_push_button.png
  */
