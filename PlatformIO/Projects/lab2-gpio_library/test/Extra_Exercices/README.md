@@ -11,3 +11,4 @@ You can find the cod in the file lab2.ino and here the scheme of the LEDs and pu
 
 
 ![scheme of the LEDs and push button application](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab2-gpio_library/test/Extra_Exercices/lab2_LEDs_and_push_button.png)
+ 
