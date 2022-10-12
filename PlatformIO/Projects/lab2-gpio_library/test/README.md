@@ -1,11 +1,3 @@
-
- | **Module** | **Number of bits** | **1** | **8** | **32** | **64** | **128** | **256** | **1024** |
-   | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-- |
-   | Timer/Counter0 | 8 | 16u | 128u | -- | 1024u | -- | 4096u | 16384u |
-   | Timer/Counter1 | 16 | 4096u | 32768u | -- | 0,26s | -- | 1,05s | 4,19s |
-   | Timer/Counter2 | 8 | 16u | 128u | 512u | 1024u | 2048u | 4096u | 16384u |
-
-
 # Lab 2: Ryan VERNEL
 
 ### GPIO control registers
