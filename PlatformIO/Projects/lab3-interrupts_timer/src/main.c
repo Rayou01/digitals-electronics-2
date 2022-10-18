@@ -42,7 +42,7 @@ int main(void)
     TIM1_overflow_33ms();
     TIM1_overflow_interrupt_enable();
 
-    TIM0_overflow_16us();
+    TIM0_overflow_16ms();
     TIM0_overflow_interrupt_enable();
 
     // Enables interrupts by setting the global interrupt mask
