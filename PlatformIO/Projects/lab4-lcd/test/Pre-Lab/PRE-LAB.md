@@ -7,3 +7,6 @@
    | D[3:0] | -- | Data bus line |
    | D[7:4] | PD[7:4]  | Data bus line |
    | K | PB2/GND ?  | Backlight cathode |
+
+
+   ![Picture of ASCII table]()
