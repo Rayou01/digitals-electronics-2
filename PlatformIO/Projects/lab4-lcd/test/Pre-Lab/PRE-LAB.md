@@ -9,4 +9,4 @@
    | K | PB2/GND ?  | Backlight cathode |
 
 
-   ![Picture of ASCII table]()
+   ![Picture of ASCII table](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab4-lcd/test/Pre-Lab/ASCII-Table.png)
