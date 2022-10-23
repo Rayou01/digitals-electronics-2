@@ -117,8 +117,7 @@ ISR(TIMER2_OVF_vect)
     char string[2];             // String for converted numbers by itoa()
 
     no_of_overflows++;
-    if (no_of_overflows >= 6)
-    {
+    if (no_of_overflows >= 6){
         // Do this every 6 x 16 ms = 100 ms
         no_of_overflows = 0;
 
@@ -134,26 +133,22 @@ ISR(TIMER2_OVF_vect)
               mins = 0;
             }
             itoa(mins, string, 10);  // Convert decimal value to string
-        // Display "00:secs.tenths"
-        lcd_gotoxy(1, 0);
-        if(mins < 10){
-          lcd_putc('0');
-        }
-        lcd_puts(string);
+            lcd_gotoxy(1, 0);
+            if(mins < 10){
+              lcd_putc('0');
+            }
+            lcd_puts(string);
           }
           itoa(secs, string, 10);  // Convert decimal value to string
-        // Display "00:secs.tenths"
-        lcd_gotoxy(4, 0);
-        if(secs < 10){
-          lcd_putc('0');
+          lcd_gotoxy(4, 0);
+          if(secs < 10){
+            lcd_putc('0');
+          }
+          lcd_puts(string);
         }
-        lcd_puts(string);
-        }
-
-        itoa(tenths, string, 10);  // Convert decimal value to string
-        // Display "00:00.tenths"
-        lcd_gotoxy(7, 0);
-        lcd_puts(string);
+      itoa(tenths, string, 10);  // Convert decimal value to string
+      lcd_gotoxy(7, 0);
+      lcd_puts(string);
     }
     // Else do nothing and exit the ISR
 }
