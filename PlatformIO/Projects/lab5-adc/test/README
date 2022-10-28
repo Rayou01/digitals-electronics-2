@@ -6,12 +6,12 @@
 
    | **Push button** | **PC0[A0] voltage** | **ADC value (calculated)** | **ADC value (measured)** | **ADC value (measured, hex)** |
    | :-: | :-: | :-: | :-: | :-: |
-   | Right  | 0&nbsp;V | 0   | 0 | 0 |
-   | Up     | 0.495&nbsp;V | 101 | 100 |  |
-   | Down   | 1.203&nbsp;V | 246 | 257 |  |
-   | Left   | 1.97 V | 403 | 410 |  |
-   | Select | 3.182 V | 651 | 641 |  |
-   | none   | 5 V | 1023 | 1023 |  |
+   | Right  | 0 V | 0 | 0 | 0 |
+   | Up     | 0.495 V | 101 | 100 | 64 |
+   | Down   | 1.203 V | 246 | 257 | 101 |
+   | Left   | 1.97 V | 403 | 410 | 19A |
+   | Select | 3.182 V | 651 | 641 | 281 |
+   | none   | 5 V | 1023 | 1023 | 3FF |
 
 ### Temperature meter
 
@@ -21,6 +21,8 @@ Consider an application for temperature measurement. Use analog temperature sens
 
    ![your figure]()
 
-3. Draw two flowcharts for interrupt handler `TIMER1_OVF_vect` (which overflows every 1&nbsp;sec) and `ADC_vect`. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
+3. Draw two flowcharts for interrupt handler `TIMER1_OVF_vect` (which overflows every 1 sec) and `ADC_vect`. The image can be drawn on a computer or by hand. Use clear descriptions of the individual steps of the algorithms.
 
-   ![your figure]()
+   ![flowchart-lab5-Part1]()
+   ![flowchart-lab5-Part2]()
+   ![flowchart-lab5-Part3]()
