@@ -25,4 +25,4 @@ Consider an application for temperature measurement. Use analog temperature sens
 
    ![flowchart-lab5-Part1](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab5-adc/test/flowchart-lab5-part1.png)
    ![flowchart-lab5-Part2](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab5-adc/test/flowchart-lab5-part2.png)
-   ![flowchart-lab5-Part3]()
+   ![flowchart-lab5-Part3](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/lab5-adc/test/flowchart-lab5-part3.png)
