@@ -105,9 +105,31 @@ ISR(TIMER1_OVF_vect)
 
         //Send values to UART
         itoa(air.temp_int, string, 10);
+        uart_puts("Temperature: ");
         uart_puts(string);
         uart_putc('.');
         itoa(air.temp_dec, string, 10);
+        uart_puts(string);
+        uart_puts("\t");
+    }
+    twi_stop();
+
+    //Read humidity from 0x5c
+    sla = 0x5c;
+    ack = twi_start(sla, TWI_WRITE);
+    if(ack == 0){
+        twi_write(0x00);
+        twi_stop();
+        twi_start(sla, TWI_READ);
+        air.humid_int = twi_read_ack();
+        air.humid_dec = twi_read_nack();
+
+        //Send values to UART
+        itoa(air.humid_int, string, 10);
+        uart_puts("Humidity: ");
+        uart_puts(string);
+        uart_putc('.');
+        itoa(air.humid_dec, string, 10);
         uart_puts(string);
         uart_puts("\r\n");
     }
