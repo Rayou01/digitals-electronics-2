@@ -26,5 +26,5 @@ Consider an application for temperature and humidity measurements. Use sensor DH
 
    ![flowchart of temperature and humidity measurements](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/flowchart%20of%20temperature%20and%20humidity%20measurements-part1.png)
 
-   ![flowchart of temperature and humidity measurements](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/flowchart%20of%20temperature%20and%20humidity%20measurements-part1.1.png)
-   ![flowchart of temperature and humidity measurements](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/flowchart%20of%20temperature%20and%20humidity%20measurements-part1.2.png)
+   ![flowchart of temperature and humidity measurements](https://github.com/Rayou01/digitals-electronics-2/blob/main/PlatformIO/Projects/LAB7-I2C/test/flowchart%20part%201.1.png?raw=true)
+   ![flowchart of temperature and humidity measurements](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/flowchart%20part1.2.png)
