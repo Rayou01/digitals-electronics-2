@@ -18,7 +18,7 @@
 
 Here the code:
 
-   ![timing diagram of I2C signals]()
+   ![timing diagram of I2C signals](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/code%20of%20timing%20diagram.png)
 
 And here the timing diagram:
 
