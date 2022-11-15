@@ -10,13 +10,19 @@
    * SPI pins
    * external interrupt pins INT0, INT1
 
-   ![Arduino Pins]()
+   ![Arduino Pins](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/arduinoPins.png)
 
 ### I2C communication
 
 2. Draw a timing diagram of I2C signals when calling function `rtc_read_years()`. Let this function reads one byte-value from RTC DS3231 address `06h` (see RTC datasheet) in the range `00` to `99`. Specify when the SDA line is controlled by the Master device and when by the Slave device. Draw the whole request/receive process, from Start to Stop condition. The image can be drawn on a computer (by [WaveDrom](https://wavedrom.com/) for example) or by hand. Name all parts of timing diagram.
 
+Here the code:
+
    ![timing diagram of I2C signals]()
+
+And here the timing diagram:
+
+   ![timing diagram of I2C signals](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/LAB7-I2C/test/wavedrom.png)
 
 ### Meteo station
 
