@@ -32,7 +32,7 @@
 int main(void)
 {
     // Initialize display
-    lcd_init(LCD_DISP_ON);
+    lcd_init(LCD_DISP_ON_BLINK);
     //Initialize UART connection
     uart_init(UART_BAUD_SELECT(9600, F_CPU));
 
@@ -76,35 +76,25 @@ ISR(TIMER1_OVF_vect)
   static lastStateA = GPIO_read(&DDRD, PD3);
   uint8_t newStateA = GPIO_read(&DDRD, PD3);
   static uint8_t counter = 0;
-  
-  if
 
   if(newStateA != lastStateA){
     if (GPIO_read(&DDRD, PD2) != newStateA) counter++;
     else counter--;
   }
   newStateA = lastStateA;
-
-
-  /*
-  uint8_t value = 0;
-  char string[4];
-  value = GPIO_read(&DDRD,PD3);
-  itoa(value,string,10);
-  uart_puts(string);
-  uart_puts("\n\r");*/
   
   
   
-    // Start ADC conversion
-    //ADCSRA = ADCSRA | (1<<ADSC);
+  
+  // Start ADC conversion
+  //ADCSRA = ADCSRA | (1<<ADSC);
 }
 
 /**********************************************************************
  * Function: ADC complete interrupt
  * Purpose:  Display converted value on LCD screen.
  **********************************************************************/
-ISR(ADC_vect)
+/*ISR(ADC_vect)
 {
     uint16_t value;
     static uint8_t no_of_overflows = 0;
@@ -122,4 +112,4 @@ ISR(ADC_vect)
       uart_puts(string);
       uart_puts("\n\r");
     }   
-}
+}*/
