@@ -22,11 +22,11 @@ So, let see the use of each device:
 * LCD screen allows to display information and games
 * Rotative encoder allows to play at the first game (find the password):
 * Turn: scroll through the number 
-`* Push: select the number`
+    `* Push: select the number`
 * Joystick allows to play at the second game (hangman game):
-`* x-axis: change the position of the cursor`
-`* y-axis: scroll the letters`
-`* push: permits to change the game between both`
+    `* x-axis: change the position of the cursor`
+    `* y-axis: scroll the letters`
+    `* push: permits to change the game between both`
 * UART allows ti print informations like Level1, You have 2 good answers...
 * LED is turn on when you win a game
 
