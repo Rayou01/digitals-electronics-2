@@ -19,6 +19,7 @@ The goal is 2 little games. One of them, consist in found the good password usin
 and the other game is like the hangman game using joystick device
 
 So, let see the use of each device:
+
 `* LCD screen allows to display information and games`
 
 `* Rotative encoder allows to play at the first game (find the password):`
