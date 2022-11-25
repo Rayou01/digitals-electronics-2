@@ -33,10 +33,6 @@ int main(void)
 {
     // Initialize display
     lcd_init(LCD_DISP_ON);
-
-    uint8_t valA;
-    uint8_t counter = 0;
-    valA = GPIO_read(&DDRD,PD3);
     //Initialize UART connection
     uart_init(UART_BAUD_SELECT(9600, F_CPU));
 
@@ -77,19 +73,17 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-  uint8_t valA;
-  uint8_t counter = 0;
-  uint8_t new_valA = GPIO_read(&DDRD,PD3);
-  if(valA != new_valA){
-    if(GPIO_read(&DDRD,PD2) != new_valA){
-      counter++;
-    }
-    else{
-      counter--;
-    }
-  }
-  valA = new_valA;
+  static lastStateA = GPIO_read(&DDRD, PD3);
+  uint8_t newStateA = GPIO_read(&DDRD, PD3);
+  static uint8_t counter = 0;
+  
+  if
 
+  if(newStateA != lastStateA){
+    if (GPIO_read(&DDRD, PD2) != newStateA) counter++;
+    else counter--;
+  }
+  newStateA = lastStateA;
 
 
   /*
