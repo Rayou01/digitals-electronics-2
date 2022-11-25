@@ -11,8 +11,8 @@ So for this project we need tu use:
 * LED
 
 ## Team Members
-* Ryan Vernel responsible for programming
-* Mathis Nickels responsible for schematic
+* __Ryan Vernel__ responsible for __programming__
+* __Mathis Nickels__ responsible for __schematic__
 
 ## The goal of the project
 The goal is 2 little games. One of them, consist in found the good password using the rotative encoder device
