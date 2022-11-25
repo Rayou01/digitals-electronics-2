@@ -30,6 +30,8 @@ So, let see the use of each device:
 * UART allows ti print informations like Level1, You have 2 good answers...
 * LED is turn on when you win a game
 
+Here, you can see the structure of our project. As you can see, we don't need the test repository so we deleted it.
+```c
 OUR_PROJECT                        // PlatfomIO project
 ├── include                         // Included files
 ├── lib                             // Libraries
@@ -47,3 +49,4 @@ OUR_PROJECT                        // PlatfomIO project
 │   └── main.c
 ├── platformio.ini                  // Project Configuration File
 └── README.md                       // Report of this project
+```
