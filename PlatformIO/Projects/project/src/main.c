@@ -32,21 +32,22 @@
 int main(void)
 {
     // Initialize display
-    lcd_init(LCD_DISP_ON_BLINK);
+    lcd_init(LCD_DISP_ON);
     //Initialize UART connection
     uart_init(UART_BAUD_SELECT(9600, F_CPU));
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
-    //ADMUX = ADMUX | (1<<REFS0);
+    ADMUX = ADMUX | (1<<REFS0);
     // Select input channel ADC0 (voltage divider pin)
-    //ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+    //ADMUX &=  ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0);
     // Enable ADC module
-    //ADCSRA = ADCSRA | (1<<ADEN);
+    ADCSRA = ADCSRA | (1<<ADEN);
     // Enable conversion complete interrupt
-    //ADCSRA = ADCSRA | (1<<ADIE);
+    ADCSRA = ADCSRA | (1<<ADIE);
     // Set clock prescaler to 128
-    //ADCSRA = ADCSRA | (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
+    ADCSRA = ADCSRA | (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
     TIM1_overflow_33ms();
@@ -69,47 +70,69 @@ int main(void)
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
  * Function: Timer/Counter1 overflow interrupt
- * Purpose:  Use single conversion mode and start conversion every 100 ms.
+ * Purpose:  Use rotative encoder and detect when switch to ADC converter.
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
-  static lastStateA = GPIO_read(&DDRD, PD3);
-  uint8_t newStateA = GPIO_read(&DDRD, PD3);
+  //Variables to read values of the rotative encoder
+  /*static*/ uint8_t lastStateA = GPIO_read(&DDRD, PD3);  // = 0?
+  uint8_t newStateA = GPIO_read(&DDRD, PD2);
   static uint8_t counter = 0;
-
-  if(newStateA != lastStateA){
-    if (GPIO_read(&DDRD, PD2) != newStateA) counter++;
-    else counter--;
+  //Variables to read values of the push button of the rotative encoder
+  static uint8_t pushButton = 0;
+  static uint8_t joystick_press = 0;
+  
+  //Get a counter of push button of the rotative encoder
+  if (!GPIO_read(&DDRD, PD1)) pushButton++;
+  
+  //Display on the lcd the value of the counter of rotation
+  //at the position according to the value of pushButton (x-axis)
+  if(pushButton < 4){
+    lcd_gotoxy(pushButton,0);
+    lcd_putc(counter);
   }
-  newStateA = lastStateA;
+  //Else we put the push button counter at 0
+  else{
+    lcd_clrscr();
+    pushButton = 0;
+  }
+
+  //If we turn the rotative encoder
+  if(newStateA != lastStateA){
+    //If values are not the same we increment
+    if (lastStateA != newStateA && counter < 9) counter++;
+    //Or decrement the counter
+    else if(counter > 0) counter--;
+  }
+  //Put the last value at the new value
+  lastStateA = newStateA;
   
-  
-  
-  
-  // Start ADC conversion
-  //ADCSRA = ADCSRA | (1<<ADSC);
+
+  //If the push button of the joystick is pressed
+  if (!GPIO_read(&DDRB, PB2) || joystick_press){
+    // Start ADC conversion
+    ADCSRA = ADCSRA | (1<<ADSC);
+  }
 }
 
 /**********************************************************************
  * Function: ADC complete interrupt
- * Purpose:  Display converted value on LCD screen.
+ * Purpose:  Use joystick and detect when rotative encoder is pressed.
  **********************************************************************/
-/*ISR(ADC_vect)
+ISR(ADC_vect)
 {
     uint16_t value;
-    static uint8_t no_of_overflows = 0;
     char string[4];  // String for converted numbers by itoa()
-
-    // Read converted value
-    // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
+    uint8_t no_of_overflows = 0;
     no_of_overflows++;
     if(no_of_overflows >= 6){
       no_of_overflows = 0;
-
+      // Read converted value
+      // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
       value = ADC;
       // Convert "value" to "string" and display it
       itoa(value, string, 10);
       uart_puts(string);
       uart_puts("\n\r");
     }   
-}*/
+}
