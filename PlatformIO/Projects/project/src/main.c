@@ -41,7 +41,6 @@ int main(void)
     ADMUX = ADMUX | (1<<REFS0);
     // Select input channel ADC0 (voltage divider pin)
     ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
-    //ADMUX &=  ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1); ADMUX |= (1<<MUX0);
     // Enable ADC module
     ADCSRA = ADCSRA | (1<<ADEN);
     // Enable conversion complete interrupt
@@ -75,27 +74,32 @@ int main(void)
 ISR(TIMER1_OVF_vect)
 {
   //Variables to read values of the rotative encoder
-  /*static*/ uint8_t lastStateA = GPIO_read(&DDRD, PD3);  // = 0?
+  static uint8_t lastStateA = 0;
   uint8_t newStateA = GPIO_read(&DDRD, PD2);
   static uint8_t counter = 0;
+  char string[4];
   //Variables to read values of the push button of the rotative encoder
   static uint8_t pushButton = 0;
-  static uint8_t joystick_press = 0;
+  //static uint8_t joystick_press = 0;
   
   //Get a counter of push button of the rotative encoder
-  if (!GPIO_read(&DDRD, PD1)) pushButton++;
-  
+  if (GPIO_read(&DDRD, PD1) == 1){
+    pushButton++;
+    itoa(pushButton, string, 10);
+    lcd_puts(string);
+    lcd_gotoxy(0,0);
+  }
   //Display on the lcd the value of the counter of rotation
   //at the position according to the value of pushButton (x-axis)
-  if(pushButton < 4){
-    lcd_gotoxy(pushButton,0);
-    lcd_putc(counter);
-  }
+  //if(pushButton < 4){
+    //lcd_gotoxy(pushButton,0);
+    //lcd_putc(counter);
+  //}
   //Else we put the push button counter at 0
-  else{
-    lcd_clrscr();
-    pushButton = 0;
-  }
+  //else{
+    //lcd_clrscr();
+    //pushButton = 0;
+  //}
 
   //If we turn the rotative encoder
   if(newStateA != lastStateA){
@@ -107,12 +111,13 @@ ISR(TIMER1_OVF_vect)
   //Put the last value at the new value
   lastStateA = newStateA;
   
+  
 
   //If the push button of the joystick is pressed
-  if (!GPIO_read(&DDRB, PB2) || joystick_press){
+  //if (!GPIO_read(&DDRB, PB2) || joystick_press){
     // Start ADC conversion
-    ADCSRA = ADCSRA | (1<<ADSC);
-  }
+    //ADCSRA = ADCSRA | (1<<ADSC);
+  //}
 }
 
 /**********************************************************************
