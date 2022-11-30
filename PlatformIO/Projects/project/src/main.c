@@ -49,7 +49,7 @@ int main(void)
     ADCSRA = ADCSRA | (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_33ms();
+    TIM1_overflow_262ms();
     TIM1_overflow_interrupt_enable();
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -75,36 +75,32 @@ ISR(TIMER1_OVF_vect)
 {
   //Variables to read values of the rotative encoder
   static uint8_t lastStateA = 0;
-  uint8_t newStateA = GPIO_read(&DDRD, PD2);
+  uint8_t newStateA = GPIO_read(&PIND, PD2); 
   static uint8_t counter = 0;
   char string[4];
+  static char password[4] = "1234";
   //Variables to read values of the push button of the rotative encoder
   static uint8_t pushButton = 0;
   //static uint8_t joystick_press = 0;
-  
   //Get a counter of push button of the rotative encoder
-  if (GPIO_read(&DDRD, PD1) == 1){
-    pushButton++;
-    itoa(pushButton, string, 10);
-    lcd_puts(string);
-    lcd_gotoxy(0,0);
-  }
+  if (GPIO_read(&PIND, PD1) == 0) pushButton++;
   //Display on the lcd the value of the counter of rotation
   //at the position according to the value of pushButton (x-axis)
-  //if(pushButton < 4){
-    //lcd_gotoxy(pushButton,0);
-    //lcd_putc(counter);
-  //}
+  if(pushButton < 4){
+    lcd_gotoxy(pushButton,0);
+    itoa(counter,string,10);
+    lcd_puts(string);
+  }
   //Else we put the push button counter at 0
-  //else{
-    //lcd_clrscr();
-    //pushButton = 0;
-  //}
+  else{
+    lcd_clrscr();
+    pushButton = 0;
+  }
 
   //If we turn the rotative encoder
   if(newStateA != lastStateA){
     //If values are not the same we increment
-    if (lastStateA != newStateA && counter < 9) counter++;
+    if (GPIO_read(&PIND,PD3) != newStateA && counter < 9) counter++;
     //Or decrement the counter
     else if(counter > 0) counter--;
   }
@@ -118,26 +114,35 @@ ISR(TIMER1_OVF_vect)
     // Start ADC conversion
     //ADCSRA = ADCSRA | (1<<ADSC);
   //}
+  /*
+ 
+  ADCSRA = ADCSRA | (1<<ADSC);
+  uint16_t value;
+  char string[4];
+  static uint8_t line = 0;
+  static uint8_t counter = 0;
+  static uint8_t lastStateA = 0;
+  uint8_t newStateA = GPIO_read(&PIND, PD2);
+
+  value = ADC;
+
+  if(value > 1000 && line == 1) line = 0;
+  else if(value < 10 && line == 0) line = 1;
+
+  if(!GPIO_read(&PIND,PD1)) counter++;
+  
+  if(newStateA != lastStateA){
+    //If values are not the same we increment
+    if (GPIO_read(&PIND,PD3) != newStateA && counter < 9) counter++;
+    //Or decrement the counter
+    else if(counter > 0) counter--;
+  }
+  //Put the last value at the new value
+  lastStateA = newStateA;
+
+  itoa(counter,string,10);
+  lcd_puts(string);*/
+  
+
 }
 
-/**********************************************************************
- * Function: ADC complete interrupt
- * Purpose:  Use joystick and detect when rotative encoder is pressed.
- **********************************************************************/
-ISR(ADC_vect)
-{
-    uint16_t value;
-    char string[4];  // String for converted numbers by itoa()
-    uint8_t no_of_overflows = 0;
-    no_of_overflows++;
-    if(no_of_overflows >= 6){
-      no_of_overflows = 0;
-      // Read converted value
-      // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
-      value = ADC;
-      // Convert "value" to "string" and display it
-      itoa(value, string, 10);
-      uart_puts(string);
-      uart_puts("\n\r");
-    }   
-}
