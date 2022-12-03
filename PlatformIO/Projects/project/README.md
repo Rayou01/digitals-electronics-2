@@ -4,11 +4,10 @@
 This project consist in make an application using a LCD, a joystick and a rotative encoder.
 So for this project we need tu use:
 
-* LCD screen
-* Rotative encoder
-* Joystick
-* UART (maybe RTC)
-* LED
+* *LCD screen*
+* *Rotative encoder*
+* *Joystick*
+* *LED*
 
 ## Team Members
 * __Ryan Vernel__ responsible for __programming__
@@ -20,20 +19,18 @@ and the other game is like the hangman game using joystick device
 
 So, let see the use of each device:
 
-* LCD screen allows to display information and games
-* Rotative encoder allows to play at the first game (find the password):
-* Turn: scroll through the number
-    * Push: select the number
-* Joystick allows to play at the second game (hangman game):
-    * x-axis: change the position of the cursor
-    * y-axis: scroll the letters
-    * push: permits to change the game between both
-* UART allows ti print informations like Level1, You have 2 good answers...
-* LED is turn on when you win a game
+* __LCD screen__ allows to display information and games
+* __Rotative encoder__ allows to play at the first game (find the password):
+    * __Turn__: scroll through the numbers
+    * __Push__: select the number / change game
+* __Joystick__ allows to play at the second game (hangman game):
+    * __x-axis__: scroll through the letters
+    * __push__: select the letter / change game
+* __LED__ is turn on when you win a game
 
 Here, you can see the structure of our project. As you can see, we don't need the test repository so we deleted it.
 ```c
-OUR_PROJECT                        // PlatfomIO project
+PROJECT                             // PlatfomIO project
 ├── include                         // Included files
 ├── lib                             // Libraries
 │    │── gpio                       //GPIO library
@@ -43,10 +40,7 @@ OUR_PROJECT                        // PlatfomIO project
 │    │     │── lcd_definitions.h
 │    │     │── lcd.c
 │    │     └── lcd.h
-│    └── uart                       //UART library
-│         │── uart.c
-│         └── lcd.h
-├── src                             // Source file(s)
+├── src                             // Source file
 │   └── main.c
 ├── platformio.ini                  // Project Configuration File
 └── README.md                       // Report of this project
