@@ -45,3 +45,140 @@ PROJECT                             // PlatfomIO project
 ├── platformio.ini                  // Project Configuration File
 └── README.md                       // Report of this project
 ```
+
+## Main structure of the project
+First, the structure of the project can be devided in 2 parts: the main part and then the interrupt part with games code.
+
+Here the code for the main structure of the code:
+```c
+/* Includes ----------------------------------------------------------*/
+#include <avr/io.h>         // AVR device-specific IO definitions
+#include <avr/interrupt.h>  // Interrupts standard C library for AVR-GCC
+#include <gpio.h>           // GPIO library for AVR-GCC
+#include "timer.h"          // Timer library for AVR-GCC
+#include <lcd.h>            // Peter Fleury's LCD library
+#include <stdlib.h>         // C library. Needed for number conversions
+
+//For game with the joystick
+uint8_t lastStatePBJoystick;
+uint16_t lastStateX;
+char word[7];
+char letters[26];
+uint8_t nbr_life;
+
+//For game with the encoder
+uint8_t lastStateA;
+uint8_t lastStatePushButton;
+uint8_t pushButton_encoder;
+uint8_t input_numbers[4];
+uint8_t result_password;
+uint8_t counter;
+uint8_t numbers[4];
+
+
+char string[4]; //To convert number in string (via itoa)
+uint8_t customChar[8] = {
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b00000,
+	0b11111,
+	0b11111
+};
+
+/* Function definitions ----------------------------------------------*/
+/**********************************************************************
+ * Function: Main function where the program execution begins
+ * Purpose:  Use Timer/Counter1 and start ADC conversion every 33 ms.
+ * Returns:  none
+ **********************************************************************/
+int main(void)
+{
+    // Initialize display
+    lcd_init(LCD_DISP_ON);
+
+    // Set addressing to CGRAM (Character Generator RAM)
+    lcd_command(1<<LCD_CGRAM);
+
+    GPIO_mode_output(&DDRB, PB4);
+    GPIO_write_high(&PORTB,PB4);
+
+    // Configure Analog-to-Digital Convertion unit
+    // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
+    ADMUX = ADMUX | (1<<REFS0);
+    // Select input channel ADC0 (voltage divider pin)
+    ADMUX = ADMUX & ~(1<<MUX3 | 1<<MUX2 | 1<<MUX1 | 1<<MUX0);
+    // Enable ADC module
+    ADCSRA = ADCSRA | (1<<ADEN);
+    // Enable conversion complete interrupt
+    ADCSRA = ADCSRA | (1<<ADIE);
+    // Set clock prescaler to 128
+    ADCSRA = ADCSRA | (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
+    // Configure 16-bit Timer/Counter1 to start ADC conversion
+    // Set prescaler to 33 ms and enable overflow interrupt
+    TIM1_overflow_33ms();
+    TIM1_overflow_interrupt_enable();
+    // Enables interrupts by setting the global interrupt mask
+    sei();
+
+    //Initialization of variables
+    lastStateA = GPIO_read(&PIND,PD3);
+    lastStatePushButton = GPIO_read(&PINB,PB2);
+    pushButton_encoder = 0;
+    result_password = 0;
+    counter = 0;
+
+    input_numbers[0] = 0;
+    input_numbers[1] = 0;
+    input_numbers[2] = 0;
+    input_numbers[3] = 0;
+
+    numbers[0] = 5;
+    numbers[1] = 4;
+    numbers[2] = 8;
+    numbers[3] = 1;
+
+    lastStatePBJoystick = GPIO_read(&PINB,PB3);
+    lastStateX = 512;
+    nbr_life = 10;
+
+    word[0] = 'D';
+    word[1] = 'I';
+    word[2] = 'G';
+    word[3] = 'I';
+    word[4] = 'T';
+    word[5] = 'A';
+    word[6] = 'L';
+
+    for (uint8_t i = 0; i < 26; i++){
+      letters[i] = 'A' + i;
+    }
+
+    //Display the beggining of the first game
+    for (uint8_t i = 0; i < 4; i++){
+      lcd_gotoxy(i,0);
+      itoa(input_numbers[i],string,10);
+      lcd_puts(string);
+    }
+
+    // Infinite loop
+    while (1)
+    {
+        /* Empty loop. All subsequent operations are performed exclusively 
+         * inside interrupt service routines ISRs */
+    }
+
+    // Will never reach this
+    return 0;
+}
+```
+
+![flowchart of the code]()
+
+## Structure or the 2nd game
+
+![flowchart of the code]()
+
+## Global structure of the project

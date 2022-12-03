@@ -52,8 +52,7 @@ uint8_t customChar[8] = {
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
- * Purpose:  Use Timer/Counter1 and start ADC conversion every 100 ms.
- *           When AD conversion ends, send converted value to LCD screen.
+ * Purpose:  Use Timer/Counter1 and start ADC conversion every 33 ms.
  * Returns:  none
  **********************************************************************/
 int main(void)
@@ -85,12 +84,12 @@ int main(void)
     // Enables interrupts by setting the global interrupt mask
     sei();
 
+    //Initialization of variables
     lastStateA = GPIO_read(&PIND,PD3);
     lastStatePushButton = GPIO_read(&PINB,PB2);
     pushButton_encoder = 0;
     result_password = 0;
     counter = 0;
-
 
     input_numbers[0] = 0;
     input_numbers[1] = 0;
@@ -101,12 +100,6 @@ int main(void)
     numbers[1] = 4;
     numbers[2] = 8;
     numbers[3] = 1;
-
-    for (uint8_t i = 0; i < 4; i++){
-      lcd_gotoxy(i,0);
-      itoa(input_numbers[i],string,10);
-      lcd_puts(string);
-    }
 
     lastStatePBJoystick = GPIO_read(&PINB,PB3);
     lastStateX = 512;
@@ -124,6 +117,13 @@ int main(void)
       letters[i] = 'A' + i;
     }
 
+    //Display the beggining of the first game
+    for (uint8_t i = 0; i < 4; i++){
+      lcd_gotoxy(i,0);
+      itoa(input_numbers[i],string,10);
+      lcd_puts(string);
+    }
+
     // Infinite loop
     while (1)
     {
@@ -139,7 +139,7 @@ int main(void)
 /* Interrupt service routines ----------------------------------------*/
 /**********************************************************************
  * Function: Timer/Counter1 overflow interrupt
- * Purpose:  Use single conversion mode and start conversion every 100 ms.
+ * Purpose:  Use single conversion mode and start conversion every 33 ms.
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
@@ -149,7 +149,7 @@ ISR(TIMER1_OVF_vect)
 
 /**********************************************************************
  * Function: ADC complete interrupt
- * Purpose:  Display converted value on LCD screen.
+ * Purpose:  Display games on LCD screen which can be played with rotative encoder and joystick.
  **********************************************************************/
 ISR(ADC_vect)
 {
