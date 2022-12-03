@@ -80,7 +80,7 @@ int main(void)
     ADCSRA = ADCSRA | (1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0);
     // Configure 16-bit Timer/Counter1 to start ADC conversion
     // Set prescaler to 33 ms and enable overflow interrupt
-    TIM1_overflow_33ms();
+    TIM1_overflow_262ms();
     TIM1_overflow_interrupt_enable();
     // Enables interrupts by setting the global interrupt mask
     sei();
@@ -143,183 +143,72 @@ int main(void)
  **********************************************************************/
 ISR(TIMER1_OVF_vect)
 {
+  //Variables to read values of the rotative encoder
+  static uint8_t lastStateA = 0;
+  uint8_t newStateA = GPIO_read(&DDRD, PD2);
+  static uint8_t counter = 0;
+  char string[4];
+  //Variables to read values of the push button of the rotative encoder
+  static uint8_t pushButton = 0;
+  //static uint8_t joystick_press = 0;
+  
+  //Get a counter of push button of the rotative encoder
+  if (GPIO_read(&DDRD, PD1) == 1){
+    pushButton++;
+    itoa(pushButton, string, 10);
+    lcd_puts(string);
+    lcd_gotoxy(0,0);
+  }
+  //Display on the lcd the value of the counter of rotation
+  //at the position according to the value of pushButton (x-axis)
+  //if(pushButton < 4){
+    //lcd_gotoxy(pushButton,0);
+    //lcd_putc(counter);
+  //}
+  //Else we put the push button counter at 0
+  //else{
+    //lcd_clrscr();
+    //pushButton = 0;
+  //}
+
+  //If we turn the rotative encoder
+  if(newStateA != lastStateA){
+    //If values are not the same we increment
+    if (lastStateA != newStateA && counter < 9) counter++;
+    //Or decrement the counter
+    else if(counter > 0) counter--;
+  }
+  //Put the last value at the new value
+  lastStateA = newStateA;
+  
+  
+
+  //If the push button of the joystick is pressed
+  //if (!GPIO_read(&DDRB, PB2) || joystick_press){
     // Start ADC conversion
-    ADCSRA = ADCSRA | (1<<ADSC);
+    //ADCSRA = ADCSRA | (1<<ADSC);
+  //}
 }
 
 /**********************************************************************
  * Function: ADC complete interrupt
- * Purpose:  Display games on LCD screen than can be played with rotary encoder and joystick
+ * Purpose:  Use joystick and detect when rotative encoder is pressed.
  **********************************************************************/
 ISR(ADC_vect)
 {
-  static uint8_t code = 0;
-
-  if (code == 0)
-  {
-    uint8_t newStateA = GPIO_read(&PIND,PD3);
-    uint8_t newStatePushButton = GPIO_read(&PINB,PB2);
-
-    if (lastStatePushButton != newStatePushButton && !newStatePushButton && lastStatePushButton){
-      input_numbers[pushButton_encoder] = counter;
-      if (input_numbers[pushButton_encoder] == numbers[pushButton_encoder] && pushButton_encoder <= 4) result_password++;
-      pushButton_encoder++;
-    }
-    lastStatePushButton = newStatePushButton;
-    if (lastStateA != newStateA){
-      //If values are not the same we increment
-      if (GPIO_read(&PIND,PD2) != newStateA){
-        if (counter < 9) counter++;
-      }
-      //Or decrement the counter
-      else if (counter > 0) counter--;
-    }
-    //Put the last value at the new value
-    lastStateA = newStateA;
-
-    if (pushButton_encoder == 5){
-      lcd_clrscr();
-      GPIO_write_high(&PORTB,PB4);
-      counter = 0;
-      result_password = 0;
-      input_numbers[0] = 0;
-      input_numbers[1] = 0;
-      input_numbers[2] = 0;
-      input_numbers[3] = 0;
-      lcd_gotoxy(0,0);
-      pushButton_encoder = 0;
-      for (uint8_t i = 0; i < 4; i++){
-        lcd_gotoxy(i,0);
-        itoa(input_numbers[i],string,10);
-        lcd_puts(string);
-      }
-    }
-    else if (pushButton_encoder < 4){
-      lcd_gotoxy(pushButton_encoder,0);
-      itoa(counter,string,10);
-      lcd_puts(string);
-    }
-    else{
-      if(result_password == 4){
-        GPIO_write_low(&PORTB,PB4);
-        lcd_gotoxy(5,0);
-        lcd_puts("You win");
-        lcd_gotoxy(0,1);
-        lcd_puts("Press to restart");
-      }
-      else{
-        lcd_gotoxy(5,0);
-        lcd_puts("You loose");
-        lcd_gotoxy(0,1);
-        lcd_puts("Press to restart");
-      }
-    }
-    if (!GPIO_read(&PINB,PB3)){
-      code = 1;
-      lcd_clrscr();
-      lcd_gotoxy(0,1);
-      itoa(nbr_life,string,10);
-      lcd_puts(string);
-
-      //Print custom caracter on many pixels
-      for (uint8_t j = 0; j < 2; j++){
-        lcd_gotoxy(j+4,0);
-        for (uint8_t i = 0; i < 8; i++)
-          lcd_data(customChar[i]);
-        lcd_command(1<<LCD_DDRAM);
-      }
-      while (!GPIO_read(&PINB,PB3)){}
-    }
-  }
-  else{
-    uint16_t newStateX = ADC;
-    static uint8_t letter = 0;
-    static uint8_t counter_letter_found = 0;
-    uint8_t newStatePBJoystick = GPIO_read(&PINB,PB3);
-  
-    if (newStateX > 1000 && lastStateX < 1000){
-      if(letter < 25) letter++;
-      else if (letter == 25) letter = 0;
-    }
-    else if (newStateX < 20 && lastStateX > 20){
-      if(letter > 0) letter--;
-      else if (letter == 0) letter = 25;
-    }
-    lastStateX = newStateX;
-
-    if (counter_letter_found == 7 || nbr_life == 0){
-      letter = 0;
-
-      if (nbr_life == 0){
-        lcd_gotoxy(3,0);
-        lcd_puts("You loose");
-        lcd_gotoxy(0,1);
-        lcd_puts("Press to restart");
-      }
-      else{
-        GPIO_write_low(&PORTB,PB4);
-        lcd_gotoxy(4,0);
-        lcd_puts("You win");
-        lcd_gotoxy(0,1);
-        lcd_puts("Press to restart");
-      }
-      if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
-        lcd_clrscr();
-        counter_letter_found = 0;
-        nbr_life = 10;
-        GPIO_write_high(&PORTB,PB4);
-
-        for (uint8_t j = 0; j < 2; j++){
-          lcd_gotoxy(j+4,0);
-          for (uint8_t i = 0; i < 8; i++)
-            lcd_data(customChar[i]);
-          lcd_command(1<<LCD_DDRAM);
-        }
-        return;
-      }
-    }
-    else if (nbr_life > 0){
-      GPIO_write_high(&PORTB,PB4);
-      lcd_gotoxy(7,1);
-      lcd_putc(letters[letter]);
-      lcd_gotoxy(0,1);
-      itoa(nbr_life,string,10);
-      if (nbr_life < 10) lcd_puts("0");
-      lcd_puts(string);
-    }
-    if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
-        uint8_t compare = 0;
-
-        for (uint8_t i = 0; i < 7; i++){
-          if (word[i] == letters[letter]){
-            counter_letter_found++;
-            lcd_gotoxy(i+4,0);
-            lcd_putc(letters[letter]);
-            compare++;
-          }
-        }
-        if (compare == 0) nbr_life--;
-    }
-    lastStatePBJoystick = newStatePBJoystick;
-
-    if (!GPIO_read(&PINB,PB2)){
-      code = 0;
-      lcd_clrscr();
-      GPIO_write_high(&PORTB,PB4);
-      counter = 0;
-      result_password = 0;
-      input_numbers[0] = 0;
-      input_numbers[1] = 0;
-      input_numbers[2] = 0;
-      input_numbers[3] = 0;
-      lcd_gotoxy(0,0);
-      pushButton_encoder = 0;
-      for (uint8_t i = 0; i < 4; i++){
-        lcd_gotoxy(i,0);
-        itoa(input_numbers[i],string,10);
-        lcd_puts(string);
-        while (!GPIO_read(&PINB,PB2)){}
-      }
-    }
-  }
+    uint16_t value;
+    char string[4];  // String for converted numbers by itoa()
+    uint8_t no_of_overflows = 0;
+    no_of_overflows++;
+    if(no_of_overflows >= 6){
+      no_of_overflows = 0;
+      // Read converted value
+      // Note that, register pair ADCH and ADCL can be read as a 16-bit value ADC
+      value = ADC;
+      // Convert "value" to "string" and display it
+      itoa(value, string, 10);
+      uart_puts(string);
+      uart_puts("\n\r");
+    }   
 }
+
