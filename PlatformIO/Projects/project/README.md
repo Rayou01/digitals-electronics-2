@@ -524,4 +524,4 @@ This way, we can easily switch between games.
 
 Now the flowchart (if you want to see the entire flowchart you can find it in the images folder):
 
-![flowchart of the project]()
+![flowchart of the project compressed](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_project_compressed.jpg)
