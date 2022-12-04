@@ -192,7 +192,7 @@ As you can see, we initialize
 
 To make it easier, you can see the flowchart of main function that explains you what do the function:
 
-  ![flowchart of main function]()
+  ![flowchart of main function](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/flowchart_main-function.png)
 
 ## Structure or the part: Interrupts
 Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
