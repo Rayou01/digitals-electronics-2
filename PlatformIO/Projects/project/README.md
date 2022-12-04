@@ -46,9 +46,9 @@ PROJECT                             // PlatfomIO project
 └── README.md                       // Report of this project
 ```
 
-### Hardware description
+## Hardware description
 
-## Pin connection for LCD
+### Pin connection for LCD
 header j1 Bottom half
    | **Pin** | **Signal** | **Arduino Pin** | **Description** |
    | :-: | :-: | :-: | :-: |
@@ -69,7 +69,7 @@ header j2
    | 5 | GND |  | GND |
    | 6 | VCC |  | Power Supply of Arduino |
 
-## Pin connection for Joystick
+### Pin connection for Joystick
    | **Signal** | **Arduino Pin** | **Description** |
    | :-: | :-: | :-: |
    | VRx | PD4 | Voltage Proportional to X axis |
@@ -78,7 +78,7 @@ header j2
    | GND | GND | GND |
    | VCC | 5V | Power Supply of Arduino |
 
-## Pin connection for rotary encoder
+### Pin connection for rotary encoder
    | **Signal** | **Arduino Pin** | **Description** |
    | :-: | :-: | :-: |
    | CLK (output A) | PD3 | is the primary output pulse to determine the amount of rotation. Each time the knob is turned in either direction by just one detent (click), the ‘CLK’ output goes through one cycle of going HIGH and then LOW. |
@@ -87,7 +87,7 @@ header j2
    | GND | GND | GND |
    | VCC | 5V | Power Supply of Arduino |
 
-## Pin connection for LED in active low
+### Pin connection for LED in active low
 | **Signal** | **Arduino Pin** |
    | :-: | :-: |
    | Anode | 5V |
