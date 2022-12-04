@@ -153,30 +153,38 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 ISR(ADC_vect)
 {
+  //allows us to know when switch beetwen both games
   static uint8_t code = 0;
-
-  if (code == 0)
-  {
+  //if the joystick have been pushed 
+  //(or if it's the first time) 
+  if (code == 0){
+    //variables for rotary encoder
     uint8_t newStateA = GPIO_read(&PIND,PD3);
     uint8_t newStatePushButton = GPIO_read(&PINB,PB2);
 
+    //If we press the button of the encoder, we take the value choosen
+    //and we compare it with the value to find
     if (lastStatePushButton != newStatePushButton && !newStatePushButton && lastStatePushButton){
       input_numbers[pushButton_encoder] = counter;
       if (input_numbers[pushButton_encoder] == numbers[pushButton_encoder] && pushButton_encoder <= 4) result_password++;
       pushButton_encoder++;
     }
+    //change state push button of rotary encoder
     lastStatePushButton = newStatePushButton;
+
+    //if we turn the rotary encoder
     if (lastStateA != newStateA){
-      //If values are not the same we increment
+      //If we turn in a specific way we increment
       if (GPIO_read(&PIND,PD2) != newStateA){
         if (counter < 9) counter++;
       }
-      //Or decrement the counter
+      //else we decrement
       else if (counter > 0) counter--;
     }
     //Put the last value at the new value
     lastStateA = newStateA;
 
+    //if we press the button to restart
     if (pushButton_encoder == 5){
       lcd_clrscr();
       GPIO_write_high(&PORTB,PB4);
@@ -188,18 +196,21 @@ ISR(ADC_vect)
       input_numbers[3] = 0;
       lcd_gotoxy(0,0);
       pushButton_encoder = 0;
+      //print default number to play again
       for (uint8_t i = 0; i < 4; i++){
         lcd_gotoxy(i,0);
         itoa(input_numbers[i],string,10);
         lcd_puts(string);
       }
     }
+    //When we play at the game
     else if (pushButton_encoder < 4){
       lcd_gotoxy(pushButton_encoder,0);
       itoa(counter,string,10);
       lcd_puts(string);
     }
     else{
+      //if we find all numbers
       if(result_password == 4){
         GPIO_write_low(&PORTB,PB4);
         lcd_gotoxy(5,0);
@@ -207,6 +218,7 @@ ISR(ADC_vect)
         lcd_gotoxy(0,1);
         lcd_puts("Press to restart");
       }
+      //if we loose
       else{
         lcd_gotoxy(5,0);
         lcd_puts("You loose");
@@ -214,6 +226,7 @@ ISR(ADC_vect)
         lcd_puts("Press to restart");
       }
     }
+    //if we press the push button of the joystick
     if (!GPIO_read(&PINB,PB3)){
       code = 1;
       lcd_clrscr();
@@ -228,17 +241,23 @@ ISR(ADC_vect)
           lcd_data(customChar[i]);
         lcd_command(1<<LCD_DDRAM);
       }
+      //we wait until the button is pushed 
+      //to not play the first number at the same time
       while (!GPIO_read(&PINB,PB3)){}
     }
   }
 
-
+  //if the joystick have been pushed
   else{
+    //variables for joystick
     uint16_t newStateX = ADC;
     static uint8_t letter = 0;
     static uint8_t counter_letter_found = 0;
     uint8_t newStatePBJoystick = GPIO_read(&PINB,PB3);
   
+    //if we push on x axis the joystick
+      //at the top: increment
+      //at the bottom: decrement
     if (newStateX > 1000 && lastStateX < 1000){
       if(letter < 25) letter++;
       else if (letter == 25) letter = 0;
@@ -247,17 +266,21 @@ ISR(ADC_vect)
       if(letter > 0) letter--;
       else if (letter == 0) letter = 25;
     }
+    //change state of x axis
     lastStateX = newStateX;
 
+    //if the game is finished
     if (counter_letter_found == 7 || nbr_life == 0){
       letter = 0;
 
+      //if we loose
       if (nbr_life == 0){
         lcd_gotoxy(3,0);
         lcd_puts("You loose");
         lcd_gotoxy(0,1);
         lcd_puts("Press to restart");
       }
+      //if we win
       else{
         GPIO_write_low(&PORTB,PB4);
         lcd_gotoxy(4,0);
@@ -265,6 +288,8 @@ ISR(ADC_vect)
         lcd_gotoxy(0,1);
         lcd_puts("Press to restart");
       }
+      //if we press push button we restart the game
+      //we restart the game
       if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
         lcd_clrscr();
         counter_letter_found = 0;
@@ -277,9 +302,13 @@ ISR(ADC_vect)
             lcd_data(customChar[i]);
           lcd_command(1<<LCD_DDRAM);
         }
+        //While we press the push button of joystick we wait
+        while (!GPIO_read(&PINB,PB3)){}
+        //to not restart and select a letter at the same time
         return;
       }
     }
+    //when we play
     else if (nbr_life > 0){
       GPIO_write_high(&PORTB,PB4);
       lcd_gotoxy(7,1);
@@ -289,6 +318,8 @@ ISR(ADC_vect)
       if (nbr_life < 10) lcd_puts("0");
       lcd_puts(string);
     }
+    //if we push the button of the joystick
+    //we compare each letter of the word with the selectionnated letter
     if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
         uint8_t compare = 0;
 
@@ -300,10 +331,14 @@ ISR(ADC_vect)
             compare++;
           }
         }
+        //if the letter is not in the word, we loose a life
         if (compare == 0) nbr_life--;
     }
+    //change state of push button of the joystick
     lastStatePBJoystick = newStatePBJoystick;
 
+    //if we push the push button of the encoder
+    //we switch to the other game
     if (!GPIO_read(&PINB,PB2)){
       code = 0;
       lcd_clrscr();
@@ -320,6 +355,8 @@ ISR(ADC_vect)
         lcd_gotoxy(i,0);
         itoa(input_numbers[i],string,10);
         lcd_puts(string);
+        //we wait until the button is pushed 
+        //to not play the first number at the same time
         while (!GPIO_read(&PINB,PB2)){}
       }
     }

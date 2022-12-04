@@ -242,7 +242,7 @@ To make it easier, you can see the flowchart of main function that explains you 
 
   ![flowchart of main function]()
 
-## Structure or the 2nd part: Interrupts
+## Structure of the 2nd part: TIM1_OVF Interrupt
 Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
 
 For TIM1_OVF, we just start the ADC conversion every 33ms as you can see below:
@@ -258,14 +258,196 @@ ISR(TIMER1_OVF_vect)
     ADCSRA = ADCSRA | (1<<ADSC);
 }
 ```
-
-
-```c
-
-```
-
-  ![flowchart of TIM1_OVF]()
-
 The we have the ADC_vect executed every 33ms when the ADC conversion is started. This interrupt is the main interrupt of games code.
 
+## Structure of the 2nd part: ADC_vect interrupt
+Most of the work is done here, in ADC_vect interrupt.
+You can find the entire code in the file main.c, here we will explain the code for the rotary encoder part and then the joystick part.
+To achieve the goal of our project, first we had to test the first game. For this we need to do the schematic, the code and the flowchart.
+
+### 1st game
+We need: LCD, rotary encoder and the arduino uno:
+
+  ![schematic of ADC_vect for the 1st game](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/schematic_with_encoder.png)
+
+
+Now, the code:
+```c
+uint8_t newStateA = GPIO_read(&PIND,PD3);
+uint8_t newStatePushButton = GPIO_read(&PINB,PB2);
+
+//If we press the button of the encoder, we take the value choosen
+//and we compare it with the value to find
+if (lastStatePushButton != newStatePushButton && !newStatePushButton && lastStatePushButton){
+  input_numbers[pushButton_encoder] = counter;
+  if (input_numbers[pushButton_encoder] == numbers[pushButton_encoder] && pushButton_encoder <= 4) result_password++;
+  pushButton_encoder++;
+}
+//change state push button of rotary encoder
+lastStatePushButton = newStatePushButton;
+
+//if we turn the rotary encoder
+if (lastStateA != newStateA){
+  //If we turn in a specific way we increment
+  if (GPIO_read(&PIND,PD2) != newStateA){
+    if (counter < 9) counter++;
+  }
+  //else we decrement
+  else if (counter > 0) counter--;
+}
+//Put the last value at the new value
+lastStateA = newStateA;
+
+//if we press the button to restart
+if (pushButton_encoder == 5){
+  lcd_clrscr();
+  GPIO_write_high(&PORTB,PB4);
+  counter = 0;
+  result_password = 0;
+  input_numbers[0] = 0;
+  input_numbers[1] = 0;
+  input_numbers[2] = 0;
+  input_numbers[3] = 0;
+  lcd_gotoxy(0,0);
+  pushButton_encoder = 0;
+  //print default number to play again
+  for (uint8_t i = 0; i < 4; i++){
+    lcd_gotoxy(i,0);
+    itoa(input_numbers[i],string,10);
+    lcd_puts(string);
+  }
+}
+//When we play at the game
+else if (pushButton_encoder < 4){
+  lcd_gotoxy(pushButton_encoder,0);
+  itoa(counter,string,10);
+  lcd_puts(string);
+}
+else{
+  //if we find all numbers
+  if(result_password == 4){
+    GPIO_write_low(&PORTB,PB4);
+    lcd_gotoxy(5,0);
+    lcd_puts("You win");
+    lcd_gotoxy(0,1);
+    lcd_puts("Press to restart");
+  }
+  //if we loose
+  else{
+    lcd_gotoxy(5,0);
+    lcd_puts("You loose");
+    lcd_gotoxy(0,1);
+    lcd_puts("Press to restart");
+  }
+}
+```
+
+
+And finally, the flowchart:
+
+  ![flowchart of ADC_vect for the 1st game](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_encoder.jpg)
+
+Then, we test the second game separatly and do the same things (schematic, code and flowchart)
+This time we need: LCD, joystick and arduino uno
+
+  ![schematic of the 2nd game](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/schematic_with_joystick.png)
+
+The code:
+```c
+//variables for joystick
+uint16_t newStateX = ADC;
+static uint8_t letter = 0;
+static uint8_t counter_letter_found = 0;
+uint8_t newStatePBJoystick = GPIO_read(&PINB,PB3);
+
+//if we push on x axis the joystick
+  //at the top: increment
+  //at the bottom: decrement
+if (newStateX > 1000 && lastStateX < 1000){
+  if(letter < 25) letter++;
+  else if (letter == 25) letter = 0;
+}
+else if (newStateX < 20 && lastStateX > 20){
+  if(letter > 0) letter--;
+  else if (letter == 0) letter = 25;
+}
+//change state of x axis
+lastStateX = newStateX;
+
+//if the game is finished
+if (counter_letter_found == 7 || nbr_life == 0){
+  letter = 0;
+
+  //if we loose
+  if (nbr_life == 0){
+    lcd_gotoxy(3,0);
+    lcd_puts("You loose");
+    lcd_gotoxy(0,1);
+    lcd_puts("Press to restart");
+  }
+  //if we win
+  else{
+    GPIO_write_low(&PORTB,PB4);
+    lcd_gotoxy(4,0);
+    lcd_puts("You win");
+    lcd_gotoxy(0,1);
+    lcd_puts("Press to restart");
+  }
+  //if we press push button we restart the game
+  //we restart the game
+  if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
+    lcd_clrscr();
+    counter_letter_found = 0;
+    nbr_life = 10;
+    GPIO_write_high(&PORTB,PB4);
+
+    for (uint8_t j = 0; j < 2; j++){
+      lcd_gotoxy(j+4,0);
+      for (uint8_t i = 0; i < 8; i++)
+        lcd_data(customChar[i]);
+      lcd_command(1<<LCD_DDRAM);
+    }
+    //While we press the push button of joystick we wait
+    while (!GPIO_read(&PINB,PB3)){}
+    //to not restart and select a letter at the same time
+    return;
+  }
+}
+//when we play
+else if (nbr_life > 0){
+  GPIO_write_high(&PORTB,PB4);
+  lcd_gotoxy(7,1);
+  lcd_putc(letters[letter]);
+  lcd_gotoxy(0,1);
+  itoa(nbr_life,string,10);
+  if (nbr_life < 10) lcd_puts("0");
+  lcd_puts(string);
+}
+//if we push the button of the joystick
+//we compare each letter of the word with the selectionnated letter
+if (lastStatePBJoystick != newStatePBJoystick && !newStatePBJoystick && lastStatePBJoystick){
+    uint8_t compare = 0;
+
+    for (uint8_t i = 0; i < 7; i++){
+      if (word[i] == letters[letter]){
+        counter_letter_found++;
+        lcd_gotoxy(i+4,0);
+        lcd_putc(letters[letter]);
+        compare++;
+      }
+    }
+    //if the letter is not in the word, we loose a life
+    if (compare == 0) nbr_life--;
+}
+//change state of push button of the joystick
+lastStatePBJoystick = newStatePBJoystick;
+```
+
+And the flowchart:
+
+  ![flowchart of ADC_vect for the 2nd game](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_joystick.jpg)
+  
+
 ## Global structure of the project
+![flowchart of TIM1_OVF]()
+![flowchart of TIM1_OVF]()
