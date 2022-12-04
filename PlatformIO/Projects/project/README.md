@@ -49,7 +49,7 @@ PROJECT                             // PlatfomIO project
 ## Main structure of the project
 First, the structure of the project can be devided in 2 parts: the main part and then the interrupt part with games code.
 
-Here the code for the main structure of the code:
+Here the code for the main structure of the code that we will detail for you:
 ```c
 /* Includes ----------------------------------------------------------*/
 #include <avr/io.h>         // AVR device-specific IO definitions
@@ -58,7 +58,11 @@ Here the code for the main structure of the code:
 #include "timer.h"          // Timer library for AVR-GCC
 #include <lcd.h>            // Peter Fleury's LCD library
 #include <stdlib.h>         // C library. Needed for number conversions
+```
+In this part we include some libraries needed for the code.
 
+Then, we create some variables for 1st and 2nd game outside the main function:
+```c
 //For game with the joystick
 uint8_t lastStatePBJoystick;
 uint16_t lastStateX;
@@ -87,7 +91,12 @@ uint8_t customChar[8] = {
 	0b11111,
 	0b11111
 };
+```
+In this case, we can use this variables in any functions because they are __global variables__.
 
+### Main function
+Now, we have the main function of the project.
+```c
 /* Function definitions ----------------------------------------------*/
 /**********************************************************************
  * Function: Main function where the program execution begins
@@ -101,9 +110,6 @@ int main(void)
 
     // Set addressing to CGRAM (Character Generator RAM)
     lcd_command(1<<LCD_CGRAM);
-
-    GPIO_mode_output(&DDRB, PB4);
-    GPIO_write_high(&PORTB,PB4);
 
     // Configure Analog-to-Digital Convertion unit
     // Select ADC voltage reference to "AVcc with external capacitor at AREF pin"
@@ -152,6 +158,10 @@ int main(void)
     word[5] = 'A';
     word[6] = 'L';
 
+    //Set LED in output pin and OFF
+    GPIO_mode_output(&DDRB, PB4);
+    GPIO_write_high(&PORTB,PB4);
+
     for (uint8_t i = 0; i < 26; i++){
       letters[i] = 'A' + i;
     }
@@ -174,11 +184,19 @@ int main(void)
     return 0;
 }
 ```
+As you can see, we initialize 
+* variables, 
+* LCD, 
+* ouput pin for the LED, 
+* and we set ADC convertion and TIM1 OVF.
 
-![flowchart of the code]()
+To make it easier, you can see the flowchart of main function that explains you what do the function:
 
-## Structure or the 2nd game
+  ![flowchart of main function]()
 
-![flowchart of the code]()
+## Structure or the part: Interrupts
+Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
+
+  ![flowchart of the code]()
 
 ## Global structure of the project
