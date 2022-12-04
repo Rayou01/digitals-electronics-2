@@ -452,7 +452,7 @@ And the flowchart:
 Finally, we must merge both game.
 So for the schematic:
 
-  ![Schematic of the project]()
+  ![Schematic of the project](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/schematic_of_the_project.png)
 
 Then for the code, we use both code that we present you above but we need to know when do we have to switch between them.
 For this, we do this (if you want the entire code you can find it in the main.c file in the src folder):
