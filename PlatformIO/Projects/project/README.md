@@ -59,6 +59,7 @@ header j1 Bottom half
    | 11 | GND | GND | GND |
    | 12 | VCC | 5V | Power Supply of Arduino |
 
+
 header j2
    | **Pin** | **Signal** | **Arduino Pin** | **Description** |
    | :-: | :-: | :-: | :-: |
@@ -72,9 +73,9 @@ header j2
 ### Pin connection for Joystick
    | **Signal** | **Arduino Pin** | **Description** |
    | :-: | :-: | :-: |
-   | VRx | PD4 | Voltage Proportional to X axis |
-   | VRy | PD5 | Voltage Proportional to Y axis |
-   | SW | PD6 | Push button |
+   | VRx | PC0 | Voltage Proportional to X axis |
+   | VRy |  | Voltage Proportional to Y axis |
+   | SW | PB3 | Push button |
    | GND | GND | GND |
    | VCC | 5V | Power Supply of Arduino |
 
@@ -83,7 +84,7 @@ header j2
    | :-: | :-: | :-: |
    | CLK (output A) | PD3 | is the primary output pulse to determine the amount of rotation. Each time the knob is turned in either direction by just one detent (click), the ‘CLK’ output goes through one cycle of going HIGH and then LOW. |
    | DT (output B) | PD2 |  is similar to CLK output, but it lags behind CLK by a 90° phase shift. This output is used to determine the direction of rotation. |
-   | SW | PB3 | is the active low push button. When the knob is pressed down, the state goes LOW. |
+   | SW | PB2 | is the active low push button. When the knob is pressed down, the state goes LOW. |
    | GND | GND | GND |
    | VCC | 5V | Power Supply of Arduino |
 
@@ -239,7 +240,7 @@ As you can see, we initialize
 
 To make it easier, you can see the flowchart of main function that explains you what do the function:
 
-  ![flowchart of main function](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/flowchart_main-function.png)
+  ![flowchart of main function]()
 
 ## Structure or the 2nd part: Interrupts
 Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
