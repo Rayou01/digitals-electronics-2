@@ -240,7 +240,7 @@ As you can see, we initialize
 
 To make it easier, you can see the flowchart of main function that explains you what do the function:
 
-  ![flowchart of main function]()
+  ![flowchart of main function](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_main-function.png)
 
 ## Structure of the 2nd part: TIM1_OVF Interrupt
 Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
@@ -446,7 +446,7 @@ lastStatePBJoystick = newStatePBJoystick;
 And the flowchart:
 
   ![flowchart of ADC_vect for the 2nd game](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_joystick.jpg)
-  
+
 
 ## Global structure of the project
 ![flowchart of TIM1_OVF]()
