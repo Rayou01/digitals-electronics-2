@@ -449,5 +449,79 @@ And the flowchart:
 
 
 ## Global structure of the project
-![flowchart of TIM1_OVF]()
-![flowchart of TIM1_OVF]()
+Finally, we must merge both game.
+So for the schematic:
+
+  ![Schematic of the project]()
+
+Then for the code, we use both code that we present you above but we need to know when do we have to switch between them.
+For this, we do this (if you want the entire code you can find it in the main.c file in the src folder):
+```c
+//allows us to know when switch beetwen both games
+static uint8_t code = 0;
+//if the joystick have been pushed 
+//(or if it's the first time) 
+if (code == 0){
+  
+  /********************************
+   * Here the code for the 1st game
+   ********************************/
+
+  //if we press the push button of the joystick
+  if (!GPIO_read(&PINB,PB3)){
+    code = 1;
+    lcd_clrscr();
+    lcd_gotoxy(0,1);
+    itoa(nbr_life,string,10);
+    lcd_puts(string);
+
+    //Print custom caracter on many pixels
+    for (uint8_t j = 0; j < 2; j++){
+      lcd_gotoxy(j+4,0);
+      for (uint8_t i = 0; i < 8; i++)
+        lcd_data(customChar[i]);
+      lcd_command(1<<LCD_DDRAM);
+    }
+    //we wait until the button is pushed 
+    //to not play the first number at the same time
+    while (!GPIO_read(&PINB,PB3)){}
+  }
+}
+
+//if the joystick have been pushed
+else{
+  
+  /********************************
+   * Here the code for the 2nd game
+   ********************************/
+
+  //if we push the push button of the encoder
+  //we switch to the other game
+  if (!GPIO_read(&PINB,PB2)){
+    code = 0;
+    lcd_clrscr();
+    GPIO_write_high(&PORTB,PB4);
+    counter = 0;
+    result_password = 0;
+    input_numbers[0] = 0;
+    input_numbers[1] = 0;
+    input_numbers[2] = 0;
+    input_numbers[3] = 0;
+    lcd_gotoxy(0,0);
+    pushButton_encoder = 0;
+    for (uint8_t i = 0; i < 4; i++){
+      lcd_gotoxy(i,0);
+      itoa(input_numbers[i],string,10);
+      lcd_puts(string);
+      //we wait until the button is pushed 
+      //to not play the first number at the same time
+      while (!GPIO_read(&PINB,PB2)){}
+    }
+  }
+}
+```
+This way, we can easily switch between games.
+
+Now the flowchart (if you want to see the entire flowchart you can find it in the images folder):
+
+![flowchart of the project]()
