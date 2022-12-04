@@ -46,6 +46,53 @@ PROJECT                             // PlatfomIO project
 └── README.md                       // Report of this project
 ```
 
+### Hardware description
+
+## Pin connection for LCD
+header j1 Bottom half
+   | **Pin** | **Signal** | **Arduino Pin** | **Description** |
+   | :-: | :-: | :-: | :-: |
+   | 7 | DB4 | PD4 | Data bit 4 |
+   | 8 | DB5 | PD5 | Data bit 5 |
+   | 9 | DB6 | PD6 | Data bit 6 |
+   | 10 | DB7 | PD7 | Data bit 7 |
+   | 11 | GND | GND | GND |
+   | 12 | VCC | 5V | Power Supply of Arduino |
+
+header j2
+   | **Pin** | **Signal** | **Arduino Pin** | **Description** |
+   | :-: | :-: | :-: | :-: |
+   | 1 | RS | PB0 | Register Select: High for Data Transfer, Low for Instruction Transfer |
+   | 2 | R/W | GND | Read/Write signal: High for Read mode, Low for Write mode  |
+   | 3 | E | PB1 | Read/Write Enable: High for Read, falling edge writes data  |
+   | 4 | NC |  | Optional back-light enable (not connected on the PmodCLP) |
+   | 5 | GND |  | GND |
+   | 6 | VCC |  | Power Supply of Arduino |
+
+## Pin connection for Joystick
+   | **Signal** | **Arduino Pin** | **Description** |
+   | :-: | :-: | :-: |
+   | VRx | PD4 | Voltage Proportional to X axis |
+   | VRy | PD5 | Voltage Proportional to Y axis |
+   | SW | PD6 | Push button |
+   | GND | GND | GND |
+   | VCC | 5V | Power Supply of Arduino |
+
+## Pin connection for rotary encoder
+   | **Signal** | **Arduino Pin** | **Description** |
+   | :-: | :-: | :-: |
+   | CLK (output A) | PD3 | is the primary output pulse to determine the amount of rotation. Each time the knob is turned in either direction by just one detent (click), the ‘CLK’ output goes through one cycle of going HIGH and then LOW. |
+   | DT (output B) | PD2 |  is similar to CLK output, but it lags behind CLK by a 90° phase shift. This output is used to determine the direction of rotation. |
+   | SW | PB3 | is the active low push button. When the knob is pressed down, the state goes LOW. |
+   | GND | GND | GND |
+   | VCC | 5V | Power Supply of Arduino |
+
+## Pin connection for LED in active low
+| **Signal** | **Arduino Pin** |
+   | :-: | :-: |
+   | Anode | 5V |
+   | Cathode | PB4 |
+
 ## Main structure of the project
 First, the structure of the project can be devided in 2 parts: the main part and then the interrupt part with games code.
 
@@ -194,9 +241,30 @@ To make it easier, you can see the flowchart of main function that explains you 
 
   ![flowchart of main function](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/flowchart_main-function.png)
 
-## Structure or the part: Interrupts
+## Structure or the 2nd part: Interrupts
 Now for the second part of the code, there is interrupts function. It's here where games code will be executed.
 
-  ![flowchart of the code]()
+For TIM1_OVF, we just start the ADC conversion every 33ms as you can see below:
+```c
+/* Interrupt service routines ----------------------------------------*/
+/**********************************************************************
+ * Function: Timer/Counter1 overflow interrupt
+ * Purpose:  Use single conversion mode and start conversion every 33 ms.
+ **********************************************************************/
+ISR(TIMER1_OVF_vect)
+{
+    // Start ADC conversion
+    ADCSRA = ADCSRA | (1<<ADSC);
+}
+```
+
+
+```c
+
+```
+
+  ![flowchart of TIM1_OVF]()
+
+The we have the ADC_vect executed every 33ms when the ADC conversion is started. This interrupt is the main interrupt of games code.
 
 ## Global structure of the project
