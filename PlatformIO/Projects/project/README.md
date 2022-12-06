@@ -528,4 +528,8 @@ Now the flowchart (if you want to see the entire flowchart you can find it in th
 ![flowchart of the project compressed](https://raw.githubusercontent.com/Rayou01/digitals-electronics-2/main/PlatformIO/Projects/project/images/flowchart_project_compressed.jpg)
 
 ## Simulation and videos
+Here you can find videos for the first game, the second and finally the final project with both games.
 
+video of the 1st game (55 sec) : https://www.youtube.com/watch?v=4Cm_Hbl8WEU&ab_channel=Albatrosdiles
+video of 2nd game (55 sec) : https://www.youtube.com/watch?v=uPZpe1KtD3k&ab_channel=Albatrosdiles
+video of final project (1 min 16 sec) : https://www.youtube.com/watch?v=TNnSN-zveMA&ab_channel=Albatrosdiles
